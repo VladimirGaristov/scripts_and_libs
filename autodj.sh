@@ -1,11 +1,13 @@
 #!/bin/bash
-#Make sure xml-twig-tools is installed	(no longer needed!)
-
-vlc --one-instance >/dev/null 2>&1 &
-sleep 1
 
 #No trailing slash!
-download_location='/home/cartogan/Videos/autodj'
+download_location='/home/cartogan/Music/autodj'
+
+rm "$download_location"/* >/dev/null 2>&1
+
+#vlc --one-instance >/dev/null 2>&1 &
+mixxx >/dev/null 2>&1 &
+sleep 3
 
 #Unicode symbols in video titles are escaped as bytes which are represented with \x notation
 #For example the cyrilic letter "Щ" (sht) becomes "\xd0\xa9" - 8 bytes in total
@@ -18,19 +20,18 @@ max_filename_lenght='60'
 
 song='-'
 
-rm /home/cartogan/Videos/autodj/tmp/* >/dev/null 2>&1
-printf "Na bai Vlado scripta!\nX za izhod\n"
+printf "На Бай Владо скрипта \nX за изход\nНе забравяй да нулираш плейлиста в Mixxx!\n"
 
-#The authentication is needed for age-restricted videos by throws errors
-#printf "\nVavedi potrebitelsko ime v YouTube: "
+#The authentication is needed for age-restricted videos but throws errors
+#printf "\nПотребителско име за YouTube: "
 #read user
-#printf "\nVavedi parola za YouTube: "
+#printf "\nПарола за YouTube: "
 #read -s pass
 
 while [ true ]
 do
 	#Input song name
-	printf "\nVavedi ime na pesen i natisni Enter: "
+	printf "\nПоръчай песен: "
 	read song
 
 	#Input X to exit the script
@@ -61,9 +62,9 @@ do
 	fi
 
 	#Download only the audio of this video
-	#youtube-dl -f 250 -o "$download_location/tmp/%(title).%(ext)s" -no-playlist $url
 	#youtube-dl -u $user --password $pass -f "171/bestaudio" -o "$download_location/tmp/%(title).255s.%(ext)s" --no-playlist $url
-	youtube-dl -f "171/bestaudio" -o "$download_location/tmp/%(title).$(echo $max_filename_lenght)s.%(ext)s" --no-playlist $url
+	#youtube-dl -f "171/bestaudio" -o "$download_location/tmp/%(title).$(echo $max_filename_lenght)s.%(ext)s" --no-playlist $url
+	yt-dlp -f "m4a" -o "$download_location/tmp/%(title).$(echo $max_filename_lenght)s.%(ext)s" --no-playlist $url
 
 	#The new song will be the latest file in the directory
 	filename="$(ls -t $download_location/tmp | head -n1)"
@@ -76,5 +77,9 @@ do
 	mv "$download_location/tmp/$filename" "$download_location/$filename"
 
 	#Add the song to the current playlist
-	vlc --one-instance --playlist-enqueue "$download_location/$filename"
+	#Unfortunately when using Mixxx songs are only added to the library and loaded into the playlist when the current song ends.
+	#This means that when a group of songs is added it will be shuffled and added to the playlist only after the current song finishes playing.
+	#vlc --one-instance --playlist-enqueue "$download_location/$filename"
+	xdo activate -p $!
+	xte 'keydown Alt_L' 'key l' 'keyup Alt_L' 'key Return'
 done

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+autodj_pid="$(pidof -x -s autodj.sh)"
+
 #No trailing slash!
 download_location='/home/cartogan/Music/autodj'
 
@@ -7,6 +9,7 @@ rm "$download_location"/* >/dev/null 2>&1
 
 #vlc --one-instance >/dev/null 2>&1 &
 mixxx >/dev/null 2>&1 &
+mixxx_pid=$!
 sleep 3
 
 #Unicode symbols in video titles are escaped as bytes which are represented with \x notation
@@ -80,6 +83,15 @@ do
 	#Unfortunately when using Mixxx songs are only added to the library and loaded into the playlist when the current song ends.
 	#This means that when a group of songs is added it will be shuffled and added to the playlist only after the current song finishes playing.
 	#vlc --one-instance --playlist-enqueue "$download_location/$filename"
-	xdo activate -p $!
+	xdo activate -p $mixxx_pid
+	mixxx_titlebar="$(/home/cartogan/Programs/xgetfocus/xgetfocus)"
+	current_song_file="${mixxx_titlebar// | Mixxx/.m4a}"
+	#Rename the currently playing file to keep the data from being overwritten but prevent Mixxx from adding it back to the queue
+	if [ -f "$download_location/$current_song_file" ]
+	then
+		rm "$download_location/.KUR" >/dev/null 2>&1
+		mv "$download_location/$current_song_file" "$download_location/.KUR"
+	fi
 	xte 'keydown Alt_L' 'key l' 'keyup Alt_L' 'key Return'
+	xdo activate -p $autodj_pid
 done

@@ -4,8 +4,8 @@
 		<?php
 			if (isset($_POST['song_name']))
 			{
-				$fp = fopen("requested.txt", "a") or die("Unable to open file");
-				$song_name = $_POST['song_name'];
+				$fp = fopen("songlist.txt", "a") or die("Unable to open file");
+				$song_name = $_POST['song_name']."\n";
 				fwrite($fp, $song_name);
 				fclose($fp);
 			}

@@ -77,12 +77,13 @@ do
 
 	songList=$(curl https://garistov.idiotempire.com/songlist.txt)
 
-	#To be done properly
-	#if [ -z "$songList" ]
-	#then
+
+	if [ -z "$songList" ]
+	then
+		#To be done properly
 	#	curl -X POST -F "song_name=Never gonna give you up" https://garistov.idiotempire.com/autodj.php
-	#	continue
-	#fi
+		continue
+	fi
 
 	nextSong=$(echo "$songList" | head -n 1)
 

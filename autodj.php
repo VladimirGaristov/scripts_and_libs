@@ -10,7 +10,7 @@
 			if (isset($_POST['song_name']))
 			{
 				$song_name = $_POST['song_name']."\n";
-				if $song_name == "72DkILZfdCutpUxMc50846ChapOhAaJrXaNGanaqdQb3hxhLDZHq48JgBRre3eSqrsu2fEY09oMgPmnnjN1l5deqzVrjrLdXwyGSXL7FX07sy8jXEunqhzruGaZNBtev"
+				if (0 == strcmp(trim($song_name), "72DkILZfdCutpUxMc50846ChapOhAaJrXaNGanaqdQb3hxhLDZHq48JgBRre3eSqrsu2fEY09oMgPmnnjN1l5deqzVrjrLdXwyGSXL7FX07sy8jXEunqhzruGaZNBtev"))
 				{
 					$songlist = file_get_contents('songlist.txt');
 					$songlist = strip_first_line($songlist);

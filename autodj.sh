@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 # AutoDJ v2.1 - download a song and add it to a queue in Mixxx
 # Copyright (C) 2021 Vladimir Garistov <vl.garistov@gmail.com>
@@ -87,7 +86,7 @@ do
 	nextSong=$(echo "$songList" | head -n 1)
 
 
-	specialCharFlag=$(grep -P '[^a-zA-Z0-9\t_]' <<< "$nextSong")
+	specialCharFlag=$(grep -P '[^a-zA-Z0-9\s_]' <<< "$nextSong")
 
 	if [ -n "$specialCharFlag" ]
 	then

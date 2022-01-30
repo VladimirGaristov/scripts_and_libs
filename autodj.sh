@@ -106,17 +106,21 @@ do
 
 	# The new song will be the only file in the directory
 	filename="$(ls $buffer_dir)"
+	ffmpeg -i "$buffer_dir/$filename" -c:v copy -c:a libmp3lame -q:a 4 "$buffer_dir/${filename//.m4a/.mp3}"
+	rm "$buffer_dir/$filename"
+	filename="$(ls $buffer_dir)"
+
 	if [ ! -f "$buffer_dir/$filename" ]
 	then
 		continue
 	fi
-	existing_copies=$(ls $download_location | grep "${filename//.m4a/''}" | wc -l)
+	existing_copies=$(ls $download_location | grep "${filename//.mp3/''}" | wc -l)
 
 	# Move the file to another directory because youtube-dl sets the timestamps to weird values and
 	# it cannot be determined which file is the latest
 	if [ $existing_copies -gt 0 ]
 	then
-		mv "$buffer_dir/$filename" "$download_location/${filename//.m4a/''}-${existing_copies}.m4a"
+		mv "$buffer_dir/$filename" "$download_location/${filename//.mp3/''}-${existing_copies}.mp3"
 	else
 		mv "$buffer_dir/$filename" "$download_location/$filename"
 	fi
@@ -128,6 +132,6 @@ do
 	# First it refreshes the library, then it clicks the 'Tracks' button, sorts the songs by date added,
 	# selects the latest one, adds it to the AutoDJ queue and clicks the 'AutoDJ' button to show the queue.
 	# Due to a bug in Mixxx sometimes the sorting gets messed up. That's why the songs must be resorted every time.
-	xte 'keydown Alt_L' 'key l' 'keyup Alt_L' 'key Return' "usleep ${mixxx_lib_reload_time}000" 'mousemove 70 655' 'mouseclick 1' 'mousemove 1500 615' 'mouseclick 1' "usleep ${click_delay_time}000" 'mouseclick 1' 'key Down' 'key Menu' 'key Down' 'key Return' 'mousemove 70 680' 'mouseclick 1'
+	xte "usleep ${mixxx_lib_reload_time}000" 'keydown Alt_L' 'key l' 'keyup Alt_L' 'key Return' "usleep ${mixxx_lib_reload_time}000" 'mousemove 70 590' 'mouseclick 1' 'mousemove 1290 560' 'mouseclick 1' "usleep ${click_delay_time}000" 'mouseclick 1' 'key Down' 'key Menu' 'key Down' 'key Return' 'mousemove 70 610' 'mouseclick 1'
 	xdo activate -p $autodj_pid
 done

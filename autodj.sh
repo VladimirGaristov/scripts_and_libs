@@ -100,7 +100,7 @@ do
 	# Replace spaces with + in the song name
 	song=${song// /+}
 	# Download the youtube page with search results for videos with this name
-	curl "https://www.youtube.com/results?search_query=$(song)" > /var/tmp/autodj/yt_results.html
+	curl "https://www.youtube.com/results?search_query=$song" > /var/tmp/autodj/yt_results.html
 
 	sed -i -e 's/\"/\n/g' /var/tmp/autodj/yt_results.html
 	# Obtain the URL of the first result

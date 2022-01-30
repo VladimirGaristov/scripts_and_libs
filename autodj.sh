@@ -77,7 +77,7 @@ do
 
 	songList=$(curl https://garistov.idiotempire.com/songlist.txt)
 
-	if [ -z songList ]
+	if [ -z "$songList" ]
 	then
 		curl -X POST -F "song_name=Never gonna give you up" https://garistov.idiotempire.com/autodj.php
 		continue
@@ -88,13 +88,13 @@ do
 
 	specialCharFlag=$(grep -P '[^a-zA-Z0-9\t_]' <<< "$nextSong")
 
-	if [ -z "$specialCharFlag" ]
+	if [ -n "$specialCharFlag" ]
 	then
 		curl -X POST -F "song_name=72DkILZfdCutpUxMc50846ChapOhAaJrXaNGanaqdQb3hxhLDZHq48JgBRre3eSqrsu2fEY09oMgPmnnjN1l5deqzVrjrLdXwyGSXL7FX07sy8jXEunqhzruGaZNBtev" https://garistov.idiotempire.com/autodj.php
 		continue
 	fi
 
-	song=$("$songList")
+	song=$nextSong
 
 	# Replace spaces with + in the song name
 	song=${song// /+}

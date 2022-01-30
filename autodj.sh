@@ -71,11 +71,20 @@ printf "Vlado Garistov's AutoDJ \nInput q to quit\nDon't forget to clear the que
 
 while true
 do
+	sleep 15
+
 	# Input song name
 
 	songList=$(curl https://garistov.idiotempire.com/songlist.txt)
 
+	if [ -z songList ]
+	then
+		curl -X POST -F "song_name=Never gonna give you up" https://garistov.idiotempire.com/autodj.php
+		continue
+	fi
+
 	nextSong=$(echo "$songList" | head -n 1)
+
 
 	specialCharFlag=$(grep -P '[^a-zA-Z0-9\t_]' <<< "$nextSong")
 

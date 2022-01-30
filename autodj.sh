@@ -88,7 +88,7 @@ do
 	nextSong=$(echo "$songList" | head -n 1)
 
 
-	specialCharFlag=$(grep -P '[^a-zA-Z0-9\s_]' <<< "$nextSong")
+	specialCharFlag=$(grep -P -e '[^a-zA-Z0-9\s_]' <<< "$nextSong")
 
 	if [ -n "$specialCharFlag" ]
 	then

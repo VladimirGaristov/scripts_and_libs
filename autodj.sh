@@ -21,7 +21,7 @@
 # operation of this script. It is recomended to leave Mixxx in fullscreen on the primary display.
 #
 # It is recommended to clear the AutoDJ queue after starting the script. Add at least two songs before starting
-# the AutoDJ function in Mixxx to avoid playing the first song twice. 
+# the AutoDJ function in Mixxx to avoid playing the first song twice.
 #
 # Known issues:
 # -very long song names that only differ in the last parts of their names can be mistaken for each other
@@ -69,32 +69,33 @@ printf "Vlado Garistov's AutoDJ \nInput q to quit\nDon't forget to clear the que
 #printf "\nYouTube password: "
 #read -s pass
 
-while [ true ]
+while true
 do
 	# Input song name
-	printf "\nRequest a song: "
-	read song
 
-	# Input X to exit the script
-	if [ "$song" = 'q' ] || [ "$song" = 'Q' ]
+	songList=$(curl https://garistov.idiotempire.com/songlist.txt)
+
+	nextSong=$(echo "$songList" | head -n 1)
+
+	specialCharFlag=$(grep -P '[^a-zA-Z0-9\t_]' <<< "$nextSong")
+
+	if [ -z "$specialCharFlag" ]
 	then
-		kill $(jobs -p)
-		exit 0
-	fi
-	if [ "$song" = '' ]
-	then
+		curl TO BE DONE
 		continue
 	fi
+
+	song=$("$songList")
 
 	# Replace spaces with + in the song name
 	song=${song// /+}
 	# Download the youtube page with search results for videos with this name
-	curl "https://www.youtube.com/results?search_query=$song" > /var/tmp/autodj/yt_results.html
+	curl "https://www.youtube.com/results?search_query=$(song)" > /var/tmp/autodj/yt_results.html
 
 	sed -i -e 's/\"/\n/g' /var/tmp/autodj/yt_results.html
 	# Obtain the URL of the first result
-	url="https://www.youtube.com$(cat /var/tmp/autodj/yt_results.html | grep '/watch?v=' | head -n 1)"
-	echo $url
+	url="https://www.youtube.com$( grep '/watch?v=' /var/tmp/autodj/yt_results.html | head -n 1)"
+	echo "$url"
 
 	if [ "$url" = 'https:://www.youtube.com' ]
 	then
@@ -102,7 +103,7 @@ do
 	fi
 
 	# Download only the audio of this video
-	yt-dlp -f "m4a" -o "$buffer_dir/%(title).$(echo $max_filename_lenght)s.%(ext)s" --no-playlist $url
+	yt-dlp -f "m4a" -o "$buffer_dir/%(title).$($max_filename_lenght)s.%(ext)s" --no-playlist "$url"
 
 	# The new song will be the only file in the directory
 	filename="$(ls $buffer_dir)"
@@ -118,7 +119,7 @@ do
 
 	# Move the file to another directory because youtube-dl sets the timestamps to weird values and
 	# it cannot be determined which file is the latest
-	if [ $existing_copies -gt 0 ]
+	if [ "$existing_copies" -gt 0 ]
 	then
 		mv "$buffer_dir/$filename" "$download_location/${filename//.mp3/''}-${existing_copies}.mp3"
 	else
@@ -133,5 +134,5 @@ do
 	# selects the latest one, adds it to the AutoDJ queue and clicks the 'AutoDJ' button to show the queue.
 	# Due to a bug in Mixxx sometimes the sorting gets messed up. That's why the songs must be resorted every time.
 	xte "usleep ${mixxx_lib_reload_time}000" 'keydown Alt_L' 'key l' 'keyup Alt_L' 'key Return' "usleep ${mixxx_lib_reload_time}000" 'mousemove 70 590' 'mouseclick 1' 'mousemove 1290 560' 'mouseclick 1' "usleep ${click_delay_time}000" 'mouseclick 1' 'key Down' 'key Menu' 'key Down' 'key Return' 'mousemove 70 610' 'mouseclick 1'
-	xdo activate -p $autodj_pid
+	xdo activate -p "$autodj_pid"
 done

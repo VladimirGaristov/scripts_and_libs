@@ -81,7 +81,7 @@ do
 
 	if [ -z "$specialCharFlag" ]
 	then
-		curl TO BE DONE
+		curl -X POST -F "song_name=72DkILZfdCutpUxMc50846ChapOhAaJrXaNGanaqdQb3hxhLDZHq48JgBRre3eSqrsu2fEY09oMgPmnnjN1l5deqzVrjrLdXwyGSXL7FX07sy8jXEunqhzruGaZNBtev" https://garistov.idiotempire.com/autodj.php
 		continue
 	fi
 

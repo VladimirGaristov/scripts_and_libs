@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 # AutoDJ v2.1 - download a song and add it to a queue in Mixxx
 # Copyright (C) 2021 Vladimir Garistov <vl.garistov@gmail.com>
@@ -112,7 +113,7 @@ do
 	fi
 
 	# Download only the audio of this video
-	yt-dlp -f "m4a" -o "$buffer_dir/%(title)."$(max_filename_lenght)"s.%(ext)s" --no-playlist "$url"
+	yt-dlp -f "m4a" -o "$buffer_dir/%(title).$(echo $max_filename_lenght)s.%(ext)s" --no-playlist "$url"
 
 	curl -X POST -F "song_name=72DkILZfdCutpUxMc50846ChapOhAaJrXaNGanaqdQb3hxhLDZHq48JgBRre3eSqrsu2fEY09oMgPmnnjN1l5deqzVrjrLdXwyGSXL7FX07sy8jXEunqhzruGaZNBtev" https://garistov.idiotempire.com/autodj.php
 	# The new song will be the only file in the directory

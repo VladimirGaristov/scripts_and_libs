@@ -25,7 +25,7 @@
 			}
 		?>
 
-		<form action="autodj.php" method="post">
+		<form action="" method="post">
 		Song title: 
 		<input type="text" name="song_name">
 		<br>

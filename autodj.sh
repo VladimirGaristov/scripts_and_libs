@@ -75,7 +75,7 @@ do
 
 	# Input song name
 
-	songList=$(curl https://garistov.idiotempire.com/songlist.txt)
+	songList=$(curl http://autodj.kolegite.com/songlist.txt)
 
 
 	if [ -z "$songList" ]
